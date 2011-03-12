@@ -78,7 +78,20 @@ function uw_weather_block_contents()
 
   $output  = '';
   $output .= "Temperature: " . $weather->temperature_current_C . "<br/>";
-  $output .= "Windchill: " . $weather->windchill_C . "<br/>";
+  if (uw_weather_block_is_not_na($weather->windchill_C)) {
+    $output .= "Windchill: " . $weather->windchill_C . "<br/>";
+  }
   
   return $output;
 }
+
+/**
+ * Tests a value that comes back from the Weather Station to make sure it's not N/A
+ */
+function uw_weather_block_is_not_na($value)
+{
+  $string = sprintf("%s", $value);
+  $string = substr($string, 0, 3);
+  return $string != 'N_A';
+}
+
