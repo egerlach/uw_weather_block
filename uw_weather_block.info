@@ -1,0 +1,3 @@
+name = UW Weather Block
+description = Adds a local weather block for the UW campus
+core = 6.x
