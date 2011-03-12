@@ -1,0 +1,63 @@
+<?php
+
+/** 
+ * Display help and module information
+ * @param path Which path of the site are we displaying help for
+ * @param arg Array that holds the current path as would be returned from arg() 
+ *            function
+ * @return Help text for the path
+ */
+
+function uw_weather_block_help($path, $arg)
+{
+  $output = '';
+  switch($path)
+  {
+    case 'admin/help#uw_weather_block':
+      $output = '<p>' . t('Creates a block which displays the current weather according to the UW Weather Station.') . '</p>';
+      break;
+  }
+  return $output;
+} // function uw_weather_block_help
+
+/**
+ * Implementation of hook_block()
+ * @param string $op one of "list", "view", "save" and "configure"
+ * @param integer $delta code to identify the block
+ * @param array $edit only for "save" operation
+ */
+function uw_weather_block_block($op = 'list', $delta = 0, $edit = array())
+{
+  switch ($op)
+  {
+    case 'list':
+      $block = array();
+      $block[0] = array(
+        'info' => 'Current UW Weather',
+      );
+      return $block;
+      break;
+    case 'view':
+      $block = array(
+        'subject' => 'UW Weather',
+        'content' => uw_weather_block_contents(),
+      );
+      return $block;
+      break;
+  }
+} // function uw_weather_block_block
+
+/**
+ * Generate the content for the block
+ */
+function uw_weather_block_contents()
+{
+  $data = file_get_contents('http://weather.uwaterloo.ca/waterloo_weather_station_data.xml');
+  $weather = new SimpleXMLElement($data);
+
+  $output  = '';
+  $output .= "Temperature: " . $weather->temperature_current_C . "<br/>";
+  $output .= "Windchill: " . $weather->windchill_C . "<br/>";
+  
+  return $output;
+}
